@@ -27,7 +27,7 @@ export function About() {
           <dl className="space-y-3 text-sm">
             <div className="flex justify-between">
               <dt className="text-gray-500">Version</dt>
-              <dd className="font-medium text-gray-800">1.0.0</dd>
+              <dd className="font-medium text-gray-800">1.1.0</dd>
             </div>
             <div className="flex justify-between">
               <dt className="text-gray-500">Protocol</dt>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   ArrowLeft, Upload, Trash2, Download, FolderOpen, File,
-  RefreshCw, Plus, ChevronRight, Search
+  RefreshCw, FolderPlus, ChevronRight, Search
 } from 'lucide-react';
 import { api } from '../api.js';
 import { Modal } from './Modal.jsx';
@@ -28,6 +28,8 @@ export function ObjectBrowser({ bucket, onBack, showToast }) {
   const [search, setSearch] = useState('');
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [showFolderModal, setShowFolderModal] = useState(false);
+  const [newFolderName, setNewFolderName] = useState('');
   const fileInputRef = useRef(null);
 
   const load = useCallback(() => {
@@ -107,6 +109,15 @@ export function ObjectBrowser({ bucket, onBack, showToast }) {
     if (files.length > 0) handleUpload(files);
   };
 
+  const handleCreateFolder = () => {
+    const name = newFolderName.trim().replace(/^\/+|\/+$/g, '');
+    if (!name) return;
+    const folderPrefix = prefix + name + '/';
+    setNewFolderName('');
+    setShowFolderModal(false);
+    navigateInto(folderPrefix);
+  };
+
   const filtered = objects.filter(obj => {
     if (!search) return true;
     return obj.key.toLowerCase().includes(search.toLowerCase());
@@ -150,6 +161,12 @@ export function ObjectBrowser({ bucket, onBack, showToast }) {
           )}
           <button onClick={load} className="p-2 rounded-lg hover:bg-gray-100 text-gray-500" title="Refresh">
             <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+          </button>
+          <button
+            onClick={() => { setNewFolderName(''); setShowFolderModal(true); }}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg text-sm hover:bg-gray-700"
+          >
+            <FolderPlus size={16} /> New Folder
           </button>
           <button
             onClick={() => setShowUploadModal(true)}
@@ -302,6 +319,41 @@ export function ObjectBrowser({ bucket, onBack, showToast }) {
               onChange={e => handleUpload(e.target.files)}
             />
             {uploading && <p className="text-blue-600 text-sm text-center animate-pulse">Uploading…</p>}
+          </div>
+        </Modal>
+      )}
+
+      {/* New Folder modal */}
+      {showFolderModal && (
+        <Modal title="New Folder" onClose={() => setShowFolderModal(false)}>
+          <div className="space-y-4">
+            <p className="text-sm text-gray-500">
+              Enter a name for the new folder inside <strong>{bucket}/{prefix || ''}</strong>.
+            </p>
+            <input
+              type="text"
+              placeholder="Folder name"
+              value={newFolderName}
+              onChange={e => setNewFolderName(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') handleCreateFolder(); }}
+              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              autoFocus
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowFolderModal(false)}
+                className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleCreateFolder}
+                disabled={!newFolderName.trim()}
+                className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Create
+              </button>
+            </div>
           </div>
         </Modal>
       )}

@@ -19,3 +19,5 @@ Thumbs.db
 
 # Data directory
 /data/
+
+docker-compose.yml

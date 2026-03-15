@@ -5,14 +5,10 @@ A lightweight, fully open source, **S3 compatible** object storage server with a
 ## Quick Start
 
 ```bash
-docker run -d \
-  --name opens3 \
-  -p 9000:9000 \
-  -p 9001:9001 \
-  -v opens3-data:/data \
-  -e OPENS3_ACCESS_KEY=minioadmin \
-  -e OPENS3_SECRET_KEY=minioadmin \
-  ghcr.io/linuskang/opens3:latest
+git clone https://github.com/kangsoftware/opens3
+cd opens3
+
+docker compose up -d --build
 ```
 
 ## Build from Source

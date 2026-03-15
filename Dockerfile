@@ -28,9 +28,9 @@ RUN CGO_ENABLED=0 GOOS=linux \
 # ─── Stage 3: Minimal runtime image ─────────────────────────────────────────
 FROM alpine:3.21
 
-LABEL org.opencontainers.image.title="Opens3"
-LABEL org.opencontainers.image.description="Lightweight S3-compatible object storage with web UI"
-LABEL org.opencontainers.image.source="https://github.com/linuskang/opens3"
+LABEL org.opencontainers.image.title="OpenS3"
+LABEL org.opencontainers.image.description="Simple and open object storage"
+LABEL org.opencontainers.image.source="https://github.com/kangsoftware/opens3"
 
 RUN apk add --no-cache ca-certificates tzdata && \
     addgroup -S opens3 && \
